@@ -1,0 +1,101 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ vte (1:0.28.2-5ubuntu1) quantal; urgency=low
+ .
+   * Resynchronise with Debian (libexecdir fix closes LP: #864609).
+     Remaining changes:
+     - debian/patches/91_keep_fds.patch:
+       - vte does not support G_SPAWN_LEAVE_DESCRIPTORS_OPEN when calling
+         vte_terminal_fork_command_full().
+     - debian/patches/93_add_alt_screen_scroll_toggle.patch:
+       - Handle scrolling differently when using alternate screen or
+         scrolling is restricted.
+     - debian/patches/lp246701_scroll_region_updates.patch:
+       - Fix update glitch related to scroll regions.
+     - debian/patches/backscroll-stream-mem.patch:
+       - Provide a memory-based scrollback stream backend to avoid hitting
+         disk with terminal contents.
+   * Add version for vte_terminal_set_alternate_screen_scroll to
+     libvte9.symbols (probably a bit too tight, but due to changelog
+     truncation this is the best I could readily manage).
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/864609
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- vte-0.28.2.orig/python/vte.defs
++++ vte-0.28.2/python/vte.defs
+@@ -669,6 +669,32 @@
+   )
+ )
+ 
++(define-method search_set_wrap_around
++  (of-object "VteTerminal")
++  (c-name "vte_terminal_search_set_wrap_around")
++  (return-type "none")
++  (parameters
++   '("gboolean" "wrap_around"))
++)
++
++(define-method search_get_wrap_around
++  (of-object "VteTerminal")
++  (c-name "vte_terminal_search_get_wrap_around")
++  (return-type "gboolean")
++)
++
++(define-method search_find_previous
++  (of-object "VteTerminal")
++  (c-name "vte_terminal_search_find_previous")
++  (return-type "gboolean")
++)
++
++(define-method search_find_next
++  (of-object "VteTerminal")
++  (c-name "vte_terminal_search_find_next")
++  (return-type "gboolean")
++)
++
+ (define-method set_emulation
+   (of-object "VteTerminal")
+   (c-name "vte_terminal_set_emulation")
+--- vte-0.28.2.orig/python/vte.override
++++ vte-0.28.2/python/vte.override
+@@ -655,3 +655,22 @@ _wrap_vte_terminal_match_check(PyGObject
+     return Py_None;
+ }
+ %%
++override vte_terminal_search_set_gregex kwargs
++static void
++_wrap_vte_terminal_search_set_gregex(PyGObject *self, PyObject *args, PyObject *kwargs)
++{
++    static char *kwlist[] = { "regex", NULL };
++	char *regex_string = NULL;
++    GRegex *regex = NULL;
++	
++    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:VteTerminal.search_set_gregex", kwlist, &regex_string))
++        return NULL;
++		
++	regex = g_regex_new(regex_string, 0 , 0, NULL);	
++	vte_terminal_search_set_gregex(VTE_TERMINAL(self->obj), regex);
++	g_regex_unref(regex);
++	
++    Py_INCREF(Py_None);
++    return Py_None;
++}
++%%
