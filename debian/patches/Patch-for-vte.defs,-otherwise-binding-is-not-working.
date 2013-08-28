@@ -1,0 +1,59 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ vte (1:0.28.2-5ubuntu1) quantal; urgency=low
+ .
+   * Resynchronise with Debian (libexecdir fix closes LP: #864609).
+     Remaining changes:
+     - debian/patches/91_keep_fds.patch:
+       - vte does not support G_SPAWN_LEAVE_DESCRIPTORS_OPEN when calling
+         vte_terminal_fork_command_full().
+     - debian/patches/93_add_alt_screen_scroll_toggle.patch:
+       - Handle scrolling differently when using alternate screen or
+         scrolling is restricted.
+     - debian/patches/lp246701_scroll_region_updates.patch:
+       - Fix update glitch related to scroll regions.
+     - debian/patches/backscroll-stream-mem.patch:
+       - Provide a memory-based scrollback stream backend to avoid hitting
+         disk with terminal contents.
+   * Add version for vte_terminal_set_alternate_screen_scroll to
+     libvte9.symbols (probably a bit too tight, but due to changelog
+     truncation this is the best I could readily manage).
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/864609
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- vte-0.28.2.orig/python/vte.defs
++++ vte-0.28.2/python/vte.defs
+@@ -669,6 +669,15 @@
+   )
+ )
+ 
++(define-method search_set_gregex
++  (of-object "VteTerminal")
++  (c-name "vte_terminal_search_set_gregex")
++  (return-type "none")
++  (parameters
++    '("GRegex*" "regex")
++  )
++)
++
+ (define-method search_set_wrap_around
+   (of-object "VteTerminal")
+   (c-name "vte_terminal_search_set_wrap_around")
