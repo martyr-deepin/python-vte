@@ -8,3 +8,4 @@
 93_add_alt_screen_scroll_toggle.patch
 lp246701_scroll_region_updates.patch
 backscroll-stream-mem.patch
+Add-vte_terminal_search_*-binding-that-not-exists-in-python-vte-0.28
