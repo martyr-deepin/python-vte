@@ -655,3 +655,22 @@ _wrap_vte_terminal_match_check(PyGObject *self, PyObject *args, PyObject *kwargs
     return Py_None;
 }
 %%
+override vte_terminal_search_set_gregex kwargs
+static void
+_wrap_vte_terminal_search_set_gregex(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "regex", NULL };
+	char *regex_string = NULL;
+    GRegex *regex = NULL;
+	
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:VteTerminal.search_set_gregex", kwlist, &regex_string))
+        return NULL;
+		
+	regex = g_regex_new(regex_string, 0 , 0, NULL);	
+	vte_terminal_search_set_gregex(VTE_TERMINAL(self->obj), regex);
+	g_regex_unref(regex);
+	
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%

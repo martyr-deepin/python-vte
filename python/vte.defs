@@ -669,6 +669,32 @@
   )
 )
 
+(define-method search_set_wrap_around
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_search_set_wrap_around")
+  (return-type "none")
+  (parameters
+   '("gboolean" "wrap_around"))
+)
+
+(define-method search_get_wrap_around
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_search_get_wrap_around")
+  (return-type "gboolean")
+)
+
+(define-method search_find_previous
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_search_find_previous")
+  (return-type "gboolean")
+)
+
+(define-method search_find_next
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_search_find_next")
+  (return-type "gboolean")
+)
+
 (define-method set_emulation
   (of-object "VteTerminal")
   (c-name "vte_terminal_set_emulation")
