@@ -415,6 +415,8 @@ void vte_terminal_reset(VteTerminal *terminal,
                         gboolean clear_tabstops,
 			gboolean clear_history);
 
+void vte_terminal_reset_cursor(VteTerminal *terminal);
+
 /* Read the contents of the terminal, using a callback function to determine
  * if a particular location on the screen (0-based) is interesting enough to
  * include.  Each byte in the returned string will have a corresponding
@@ -437,6 +439,9 @@ char *vte_terminal_get_text_range(VteTerminal *terminal,
 				  GArray *attributes);
 void vte_terminal_get_cursor_position(VteTerminal *terminal,
 				      glong *column, glong *row);
+void vte_terminal_set_cursor_position(VteTerminal *terminal,
+                                      glong column, glong row);
+
 /* Display string matching:  clear all matching expressions. */
 void vte_terminal_match_clear_all(VteTerminal *terminal);
 

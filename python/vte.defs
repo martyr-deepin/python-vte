@@ -553,6 +553,12 @@
   )
 )
 
+(define-method reset_cursor
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_reset_cursor")
+  (return-type "none")
+)
+
 (define-method get_text
   (of-object "VteTerminal")
   (c-name "vte_terminal_get_text")
@@ -592,6 +598,15 @@
     '("glong*" "column")
     '("glong*" "row")
   )
+)
+
+(define-method set_cursor_position
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_set_cursor_position")
+  (return-type "none")
+  (parameters
+   '("glong" "column")
+   '("glong" "row"))
 )
 
 (define-method match_clear_all
@@ -676,6 +691,12 @@
   (parameters
     '("GRegex*" "regex")
   )
+)
+
+(define-method search_get_gregex
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_search_get_gregex")
+  (return-type "GRegex*")
 )
 
 (define-method search_set_wrap_around

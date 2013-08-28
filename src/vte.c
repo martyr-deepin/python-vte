@@ -6532,6 +6532,29 @@ vte_terminal_get_cursor_position(VteTerminal *terminal,
 	}
 }
 
+/**
+ * vte_terminal_set_cursor_position:
+ * @terminal: a #VteTerminal
+ * @column: the new cursor column
+ * @row: the new cursor row
+ *
+ * Set the location of the cursor.
+ */
+void
+vte_terminal_set_cursor_position(VteTerminal *terminal,
+                                 glong column, glong row)
+{
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+	_vte_invalidate_cursor_once(terminal, FALSE);
+	terminal->pvt->screen->cursor_current.col = column;
+	terminal->pvt->screen->cursor_current.row = row;
+	_vte_invalidate_cursor_once(terminal, FALSE);
+	_vte_check_cursor_blink(terminal);
+	vte_terminal_queue_cursor_moved(terminal);
+}
+
+
 static GtkClipboard *
 vte_terminal_clipboard_get(VteTerminal *terminal, GdkAtom board)
 {
@@ -14149,6 +14172,33 @@ vte_terminal_reset(VteTerminal *terminal,
 
         g_object_thaw_notify(G_OBJECT(terminal));
 }
+
+void 
+vte_terminal_reset_cursor(VteTerminal *terminal)
+{
+    VteTerminalPrivate *pvt;
+
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+
+    pvt = terminal->pvt;
+
+    g_object_freeze_notify(G_OBJECT(terminal));
+
+    pvt->normal_screen.cursor_saved.row = 0;
+    pvt->normal_screen.cursor_saved.col = 0;
+    pvt->normal_screen.cursor_current.row = 0;
+    pvt->normal_screen.cursor_current.col = 0;
+    pvt->normal_screen.scroll_delta = 0;
+    pvt->normal_screen.insert_delta = 0;
+    pvt->alternate_screen.cursor_saved.row = 0;
+    pvt->alternate_screen.cursor_saved.col = 0;
+    pvt->alternate_screen.cursor_current.row = 0;
+    pvt->alternate_screen.cursor_current.col = 0;
+    pvt->alternate_screen.scroll_delta = 0;
+    pvt->alternate_screen.insert_delta = 0;
+    _vte_terminal_adjust_adjustments_full (terminal);
+}    
+
 
 /**
  * vte_terminal_get_status_line:
