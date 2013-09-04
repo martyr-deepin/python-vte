@@ -202,6 +202,12 @@
   (return-type "gboolean")
 )
 
+(define-method background_update
+  (of-object "VteTerminal")
+  (c-name "vte_terminal_background_update")
+  (return-type "gboolean")
+)
+
 (define-method set_alternate_screen_scroll
   (of-object "VteTerminal")
   (c-name "vte_terminal_set_alternate_screen_scroll")

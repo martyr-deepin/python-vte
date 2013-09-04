@@ -98,7 +98,7 @@ static void vte_terminal_match_hilite_hide(VteTerminal *terminal);
 static void vte_terminal_match_hilite_show(VteTerminal *terminal, long x, long y);
 static void vte_terminal_match_hilite_update(VteTerminal *terminal, long x, long y);
 static void vte_terminal_match_contents_clear(VteTerminal *terminal);
-static gboolean vte_terminal_background_update(VteTerminal *data);
+gboolean vte_terminal_background_update(VteTerminal *terminal);
 static void vte_terminal_queue_background_update(VteTerminal *terminal);
 static void vte_terminal_process_incoming(VteTerminal *terminal);
 static void vte_terminal_emit_pending_signals(VteTerminal *terminal);
@@ -13230,7 +13230,7 @@ vte_terminal_im_append_menuitems(VteTerminal *terminal, GtkMenuShell *menushell)
 }
 
 /* Set up whatever background we wanted. */
-static gboolean
+gboolean
 vte_terminal_background_update(VteTerminal *terminal)
 {
 	double saturation;
